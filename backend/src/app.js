@@ -12,11 +12,11 @@ const { connectRedis } = require('./config/redis');
 const { errorHandler } = require('./middleware/errorHandler');
 
 // Route modules
-const authRoutes  = require('./modules/auth/auth.routes');
-const usersRoutes = require('./modules/users/users.routes');
-// Day 2 additions (placeholders)
-// const tasksRoutes    = require('./modules/tasks/tasks.routes');
-// const projectsRoutes = require('./modules/projects/projects.routes');
+const authRoutes       = require('./modules/auth/auth.routes');
+const usersRoutes      = require('./modules/users/users.routes');
+const tasksRoutes      = require('./modules/tasks/tasks.routes');
+const projectsRoutes   = require('./modules/projects/projects.routes');
+const analyticsRoutes  = require('./modules/analytics/analytics.routes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -54,10 +54,11 @@ app.get('/health', (req, res) => {
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
-app.use('/api/v1/auth',     authRoutes);
-app.use('/api/v1/users',    usersRoutes);
-// app.use('/api/v1/tasks',    tasksRoutes);    // Day 2
-// app.use('/api/v1/projects', projectsRoutes); // Day 2
+app.use('/api/v1/auth',       authRoutes);
+app.use('/api/v1/users',      usersRoutes);
+app.use('/api/v1/tasks',      tasksRoutes);
+app.use('/api/v1/projects',   projectsRoutes);
+app.use('/api/v1/analytics',  analyticsRoutes);
 
 // ─── 404 Handler ─────────────────────────────────────────────────────────────
 
