@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  # ── MySQL ───────────────────────────────────────────────────────────────────
+  # MySQL
   mysql:
     image: mysql:8.0
     container_name: task_tracker_mysql
@@ -24,7 +24,7 @@ services:
     networks:
       - task_tracker_net
 
-  # ── Redis ───────────────────────────────────────────────────────────────────
+  # Redis
   redis:
     image: redis:7-alpine
     container_name: task_tracker_redis
@@ -42,7 +42,7 @@ services:
     networks:
       - task_tracker_net
 
-  # ── API Server ──────────────────────────────────────────────────────────────
+  # API Server
   api:
     build:
       context: ./backend
@@ -81,14 +81,14 @@ services:
     networks:
       - task_tracker_net
 
-# ── Volumes ─────────────────────────────────────────────────────────────────
+# Volumes
 volumes:
   mysql_data:
     driver: local
   redis_data:
     driver: local
 
-# ── Networks ─────────────────────────────────────────────────────────────────
+# Networks
 networks:
   task_tracker_net:
     driver: bridge

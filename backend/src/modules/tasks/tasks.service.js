@@ -1,4 +1,3 @@
-'use strict';
 
 const { Task, User, Project } = require('../../models');
 const { STATUS_TRANSITIONS } = require('../../models/Task');
@@ -6,7 +5,7 @@ const { getCache, setCache, deleteCache, deletePattern } = require('../../config
 const { createError } = require('../../middleware/errorHandler');
 const { Op } = require('sequelize');
 
-// ─── Cache key helpers ────────────────────────────────────────────────────────
+// Cache key helpers
 
 /**
  * Cache key for task list per assignee.
@@ -25,7 +24,7 @@ const invalidateAssigneeCache = async (assigneeId) => {
   }
 };
 
-// ─── Task Attributes ──────────────────────────────────────────────────────────
+// Task Attributes
 
 const TASK_INCLUDES = [
   { association: 'assignee', attributes: ['id', 'name', 'email'] },
@@ -33,7 +32,7 @@ const TASK_INCLUDES = [
   { association: 'project',  attributes: ['id', 'name'] },
 ];
 
-// ─── Service Functions ────────────────────────────────────────────────────────
+// Service Functions
 
 /**
  * Enforce status transition rules.
@@ -74,7 +73,7 @@ const assertProjectBelongsToOrg = async (projectId, organizationId) => {
   return project;
 };
 
-// ─── Exported Service Methods ─────────────────────────────────────────────────
+// Exported Service Methods
 
 /**
  * List tasks with filtering, pagination and Redis caching.

@@ -1,4 +1,3 @@
-'use strict';
 
 /**
  * Seed script — creates demo data:
@@ -16,17 +15,17 @@ const { sequelize, Organization, User, Project, Task, syncDatabase } = require('
 
 const seed = async () => {
   try {
-    console.log('🌱 Starting seed...');
+    console.log(' Starting seed...');
     await syncDatabase({ alter: true });
 
-    // ── Organization ──────────────────────────────────────────────────────────
+    // Organization
     const [org] = await Organization.findOrCreate({
       where: { slug: 'acme-corp' },
       defaults: { name: 'Acme Corp', slug: 'acme-corp', description: 'Demo organization' },
     });
-    console.log(`✅ Organization: ${org.name} (${org.id})`);
+    console.log(` Organization: ${org.name} (${org.id})`);
 
-    // ── Users ─────────────────────────────────────────────────────────────────
+    // Users
     const password = await bcrypt.hash('Password@123', 12);
 
     const [admin] = await User.findOrCreate({
@@ -44,11 +43,11 @@ const seed = async () => {
       defaults: { name: 'Member User', email: 'member@acme.com', password, role: 'MEMBER', organizationId: org.id },
     });
 
-    console.log(`✅ Users created: admin, manager, member`);
+    console.log(` Users created: admin, manager, member`);
     console.log(`   admin@acme.com / manager@acme.com / member@acme.com`);
     console.log(`   Password for all: Password@123`);
 
-    // ── Projects ──────────────────────────────────────────────────────────────
+    // Projects
     const [projectA] = await Project.findOrCreate({
       where: { name: 'Website Redesign', organizationId: org.id },
       defaults: { name: 'Website Redesign', description: 'Redesign company website', organizationId: org.id, createdById: admin.id },
@@ -59,9 +58,9 @@ const seed = async () => {
       defaults: { name: 'Mobile App', description: 'Build React Native mobile app', organizationId: org.id, createdById: manager.id },
     });
 
-    console.log(`✅ Projects: Website Redesign, Mobile App`);
+    console.log(` Projects: Website Redesign, Mobile App`);
 
-    // ── Tasks ─────────────────────────────────────────────────────────────────
+    // Tasks
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const nextWeek = new Date();
@@ -85,11 +84,11 @@ const seed = async () => {
       });
     }
 
-    console.log(`✅ Tasks seeded: ${tasks.length} tasks`);
-    console.log('\n🎉 Seed complete! You can now start the server with: npm run dev\n');
+    console.log(` Tasks seeded: ${tasks.length} tasks`);
+    console.log('\n Seed complete! You can now start the server with: npm run dev\n');
     process.exit(0);
   } catch (err) {
-    console.error('❌ Seed failed:', err);
+    console.error(' Seed failed:', err);
     process.exit(1);
   }
 };

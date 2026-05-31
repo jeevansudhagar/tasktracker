@@ -1,4 +1,3 @@
-'use strict';
 
 const { Router } = require('express');
 const { body, param, query } = require('express-validator');
@@ -12,7 +11,7 @@ const router = Router();
 // All task routes require authentication
 router.use(authenticate);
 
-// ─── Validation Rules ─────────────────────────────────────────────────────────
+// Validation Rules
 
 const taskId = param('id').isUUID().withMessage('Invalid task ID');
 
@@ -74,7 +73,7 @@ const listRules = [
   query('assigneeId').optional().isUUID(),
 ];
 
-// ─── Routes ───────────────────────────────────────────────────────────────────
+// Routes
 
 // GET /tasks — all roles (MEMBER scoped to own)
 router.get('/', validate(listRules), controller.listTasks);

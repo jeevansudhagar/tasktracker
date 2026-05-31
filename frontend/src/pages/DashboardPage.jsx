@@ -118,7 +118,7 @@ export default function DashboardPage() {
             <div className="card">
               <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 16 }}>Overdue by User</h3>
               {overdueData.length === 0
-                ? <p className="text-muted">No overdue tasks 🎉</p>
+                ? <p className="text-muted">No overdue tasks </p>
                 : overdueData.map(u => (
                   <div key={u.userId} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 0', borderBottom: '1px solid var(--border)' }}>
                     <div className="avatar" style={{ width: 28, height: 28, fontSize: 11 }}>

@@ -1,4 +1,3 @@
-'use strict';
 
 const { User } = require('../../models');
 const { createError } = require('../../middleware/errorHandler');

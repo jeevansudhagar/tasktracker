@@ -1,4 +1,3 @@
-'use strict';
 
 const taskService = require('./tasks.service');
 

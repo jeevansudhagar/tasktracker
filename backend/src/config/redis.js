@@ -1,4 +1,3 @@
-'use strict';
 
 const { createClient } = require('redis');
 
@@ -12,7 +11,7 @@ const connectRedis = async () => {
       port: parseInt(process.env.REDIS_PORT) || 6379,
       reconnectStrategy: (retries) => {
         if (retries > 5) {
-          console.warn('⚠️  Redis max reconnect attempts reached. Running without cache.');
+          console.warn('  Redis max reconnect attempts reached. Running without cache.');
           return false;
         }
         return Math.min(retries * 100, 3000);
@@ -25,13 +24,13 @@ const connectRedis = async () => {
     isConnected = false;
     // Only log first error, not every retry
     if (err.code === 'ECONNREFUSED') {
-      console.warn('⚠️  Redis not available — caching disabled');
+      console.warn('  Redis not available — caching disabled');
     }
   });
 
   client.on('connect', () => {
     isConnected = true;
-    console.log('✅ Redis connected');
+    console.log(' Redis connected');
   });
 
   client.on('end', () => {
@@ -42,7 +41,7 @@ const connectRedis = async () => {
     await client.connect();
     redisClient = client;
   } catch (err) {
-    console.warn('⚠️  Redis connection failed — app will run without cache');
+    console.warn('  Redis connection failed — app will run without cache');
     redisClient = null;
   }
 

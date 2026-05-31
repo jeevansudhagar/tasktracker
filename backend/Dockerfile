@@ -1,4 +1,4 @@
-# ── Stage 1: Builder ──────────────────────────────────────────────────────────
+# Stage 1: Builder
 FROM node:20-alpine AS builder
 
 WORKDIR /app
@@ -9,7 +9,7 @@ COPY package*.json ./
 # Install only production dependencies
 RUN npm ci --omit=dev
 
-# ── Stage 2: Production image ─────────────────────────────────────────────────
+# Stage 2: Production image
 FROM node:20-alpine AS production
 
 # Security: run as non-root user

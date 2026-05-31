@@ -1,4 +1,3 @@
-'use strict';
 
 const { Router } = require('express');
 const { param, body, query } = require('express-validator');

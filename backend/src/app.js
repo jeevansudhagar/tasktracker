@@ -1,4 +1,3 @@
-'use strict';
 
 require('dotenv').config();
 
@@ -21,7 +20,7 @@ const analyticsRoutes  = require('./modules/analytics/analytics.routes');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ─── Security & Parsing Middleware ────────────────────────────────────────────
+// Security & Parsing Middleware
 
 app.use(helmet());
 
@@ -41,7 +40,7 @@ app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
-// ─── Health Check ─────────────────────────────────────────────────────────────
+// Health Check
 
 app.get('/health', (req, res) => {
   res.json({
@@ -52,7 +51,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-// ─── Routes ───────────────────────────────────────────────────────────────────
+// Routes
 
 app.use('/api/v1/auth',       authRoutes);
 app.use('/api/v1/users',      usersRoutes);
@@ -60,7 +59,7 @@ app.use('/api/v1/tasks',      tasksRoutes);
 app.use('/api/v1/projects',   projectsRoutes);
 app.use('/api/v1/analytics',  analyticsRoutes);
 
-// ─── 404 Handler ─────────────────────────────────────────────────────────────
+// 404 Handler
 
 app.use('*', (req, res) => {
   res.status(404).json({
@@ -70,11 +69,11 @@ app.use('*', (req, res) => {
   });
 });
 
-// ─── Global Error Handler (must be last) ─────────────────────────────────────
+// Global Error Handler (must be last)
 
 app.use(errorHandler);
 
-// ─── Bootstrap ────────────────────────────────────────────────────────────────
+// Bootstrap
 
 const start = async () => {
   try {
@@ -86,14 +85,14 @@ const start = async () => {
     await syncDatabase({ alter: true });
 
     app.listen(PORT, () => {
-      console.log(`\n🚀 Task Tracker API started`);
+      console.log(`\n Task Tracker API started`);
       console.log(`   Environment : ${process.env.NODE_ENV}`);
       console.log(`   Port        : ${PORT}`);
       console.log(`   URL         : http://localhost:${PORT}`);
       console.log(`   Health      : http://localhost:${PORT}/health\n`);
     });
   } catch (err) {
-    console.error('❌ Failed to start server:', err);
+    console.error(' Failed to start server:', err);
     process.exit(1);
   }
 };

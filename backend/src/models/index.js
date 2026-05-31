@@ -1,4 +1,3 @@
-'use strict';
 
 const sequelize = require('../config/database');
 const Organization = require('./Organization');
@@ -6,7 +5,7 @@ const User = require('./User');
 const Project = require('./Project');
 const Task = require('./Task');
 
-// ─── Associations ──────────────────────────────────────────────────────────────
+// Associations
 
 // Organization → Users (one-to-many)
 Organization.hasMany(User, { foreignKey: 'organizationId', as: 'members' });
@@ -36,11 +35,11 @@ Task.belongsTo(User, { foreignKey: 'assigneeId', as: 'assignee' });
 User.hasMany(Task, { foreignKey: 'createdById', as: 'createdTasks' });
 Task.belongsTo(User, { foreignKey: 'createdById', as: 'creator' });
 
-// ─── Sync helper ───────────────────────────────────────────────────────────────
+// Sync helper
 
 const syncDatabase = async ({ force = false, alter = false } = {}) => {
   await sequelize.sync({ force, alter });
-  console.log(`✅ Database synced (force=${force}, alter=${alter})`);
+  console.log(` Database synced (force=${force}, alter=${alter})`);
 };
 
 module.exports = {

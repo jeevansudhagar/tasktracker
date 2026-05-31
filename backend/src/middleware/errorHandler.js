@@ -1,4 +1,3 @@
-'use strict';
 
 /**
  * Global error handler middleware.
@@ -57,7 +56,7 @@ const errorHandler = (err, req, res, next) => {
 
   // Unknown / internal errors
   const isDev = process.env.NODE_ENV === 'development';
-  console.error('🔴 Unhandled error:', err);
+  console.error(' Unhandled error:', err);
 
   return res.status(500).json({
     status: 500,

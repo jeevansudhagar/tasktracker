@@ -7,14 +7,14 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// ── Request interceptor: attach access token ───────────────────────────────
+// Request interceptor: attach access token
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-// ── Response interceptor: auto-refresh on 401 ─────────────────────────────
+// Response interceptor: auto-refresh on 401
 let isRefreshing = false;
 let failedQueue = [];
 
@@ -71,7 +71,7 @@ api.interceptors.response.use(
   }
 );
 
-// ── Auth ──────────────────────────────────────────────────────────────────
+// Auth
 export const authApi = {
   register: (data) => api.post('/auth/register', data),
   login:    (data) => api.post('/auth/login', data),
@@ -80,7 +80,7 @@ export const authApi = {
   me:       ()     => api.get('/auth/me'),
 };
 
-// ── Users ─────────────────────────────────────────────────────────────────
+// Users
 export const usersApi = {
   list:   (params) => api.get('/users', { params }),
   get:    (id)     => api.get(`/users/${id}`),
@@ -88,7 +88,7 @@ export const usersApi = {
   delete: (id)     => api.delete(`/users/${id}`),
 };
 
-// ── Projects ──────────────────────────────────────────────────────────────
+// Projects
 export const projectsApi = {
   list:   (params) => api.get('/projects', { params }),
   get:    (id)     => api.get(`/projects/${id}`),
@@ -97,7 +97,7 @@ export const projectsApi = {
   delete: (id)     => api.delete(`/projects/${id}`),
 };
 
-// ── Tasks ─────────────────────────────────────────────────────────────────
+// Tasks
 export const tasksApi = {
   list:         (params) => api.get('/tasks', { params }),
   get:          (id)     => api.get(`/tasks/${id}`),
@@ -107,7 +107,7 @@ export const tasksApi = {
   delete:       (id)     => api.delete(`/tasks/${id}`),
 };
 
-// ── Analytics ─────────────────────────────────────────────────────────────
+// Analytics
 export const analyticsApi = {
   overdueSummary:      () => api.get('/analytics/overdue-summary'),
   taskStatusBreakdown: () => api.get('/analytics/task-status-breakdown'),

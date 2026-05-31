@@ -19,7 +19,7 @@ const Badge = ({ value, type }) => (
   <span className={`badge badge-${(value || '').toLowerCase().replace('_', '')}`}>{value}</span>
 );
 
-// ── Task Form Modal ───────────────────────────────────────────────────────────
+// Task Form Modal
 function TaskModal({ task, onClose, onSave, projects, users }) {
   const [form, setForm] = useState({
     title: task?.title || '',
@@ -104,7 +104,7 @@ function TaskModal({ task, onClose, onSave, projects, users }) {
   );
 }
 
-// ── Status Change Modal ───────────────────────────────────────────────────────
+// Status Change Modal
 function StatusModal({ task, onClose, onSave }) {
   const [status, setStatus]   = useState('');
   const [loading, setLoading] = useState(false);
@@ -154,7 +154,7 @@ function StatusModal({ task, onClose, onSave }) {
   );
 }
 
-// ── Kanban View ───────────────────────────────────────────────────────────────
+// Kanban View
 function KanbanView({ tasks, onStatusClick, onEdit, onDelete, canManage }) {
   return (
     <div className="kanban">
@@ -181,7 +181,7 @@ function KanbanView({ tasks, onStatusClick, onEdit, onDelete, canManage }) {
                   </div>
                   {t.dueDate && (
                     <p style={{ fontSize: 11, color: new Date(t.dueDate) < new Date() ? 'var(--danger)' : 'var(--text2)', marginTop: 6 }}>
-                      📅 {t.dueDate}
+                      � {t.dueDate}
                     </p>
                   )}
                   {canManage && (
@@ -201,7 +201,7 @@ function KanbanView({ tasks, onStatusClick, onEdit, onDelete, canManage }) {
   );
 }
 
-// ── List View ─────────────────────────────────────────────────────────────────
+// List View
 function ListView({ tasks, onStatusClick, onEdit, onDelete, canManage }) {
   return (
     <div className="table-wrap">
@@ -245,7 +245,7 @@ function ListView({ tasks, onStatusClick, onEdit, onDelete, canManage }) {
   );
 }
 
-// ── Main Page ─────────────────────────────────────────────────────────────────
+// Main Page
 export default function TasksPage() {
   const { canManageTasks, canManageUsers, isAdmin } = useAuth();
   const [tasks, setTasks]           = useState([]);

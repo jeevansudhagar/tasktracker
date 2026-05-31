@@ -36,7 +36,13 @@ export default function LoginPage() {
       toast.success('Account created!');
       navigate('/');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Registration failed');
+      const data = err.response?.data;
+      if (data?.errors?.length) {
+        // Show each validation error
+        data.errors.forEach(e => toast.error(`${e.field}: ${e.message}`, { duration: 5000 }));
+      } else {
+        toast.error(data?.message || 'Registration failed');
+      }
     } finally { setLoading(false); }
   };
 
@@ -91,7 +97,8 @@ export default function LoginPage() {
             </div>
             <div className="form-group">
               <label className="form-label">Password</label>
-              <input className="form-input" type="password" placeholder="Min 8 chars, A-Z, 0-9" value={form.password} onChange={e => set('password', e.target.value)} required />
+              <input className="form-input" type="password" placeholder="Password@123" value={form.password} onChange={e => set('password', e.target.value)} required />
+              <p style={{ fontSize: 11, color: 'var(--text2)', marginTop: 4 }}>Min 8 chars · Must have Uppercase, lowercase &amp; number (e.g. Password@123)</p>
             </div>
             <div className="form-group">
               <label className="form-label">Organization Name</label>

@@ -1,4 +1,3 @@
-'use strict';
 
 const { Router } = require('express');
 const { body } = require('express-validator');
@@ -8,7 +7,7 @@ const controller = require('./auth.controller');
 
 const router = Router();
 
-// ─── Validation rules ─────────────────────────────────────────────────────────
+// Validation rules
 
 const registerRules = [
   body('name').trim().notEmpty().withMessage('Name is required').isLength({ min: 2, max: 100 }),
@@ -42,7 +41,7 @@ const refreshRules = [
   body('refreshToken').notEmpty().withMessage('refreshToken is required'),
 ];
 
-// ─── Routes ───────────────────────────────────────────────────────────────────
+// Routes
 
 // Public routes
 router.post('/register', validate(registerRules), controller.register);

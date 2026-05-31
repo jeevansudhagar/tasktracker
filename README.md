@@ -136,11 +136,11 @@ tasks
 
 | Method | Endpoint        | Auth | Description                         |
 |--------|-----------------|------|-------------------------------------|
-| POST   | /register       | ❌   | Register user + create/join org     |
-| POST   | /login          | ❌   | Login, returns access + refresh tokens |
-| POST   | /refresh        | ❌   | Rotate refresh token                |
-| POST   | /logout         | ✅   | Invalidate refresh token            |
-| GET    | /me             | ✅   | Get current user profile            |
+| POST   | /register       |    | Register user + create/join org     |
+| POST   | /login          |    | Login, returns access + refresh tokens |
+| POST   | /refresh        |    | Rotate refresh token                |
+| POST   | /logout         |    | Invalidate refresh token            |
+| GET    | /me             |    | Get current user profile            |
 
 ### Users — `/api/v1/users`
 
@@ -189,15 +189,15 @@ RBAC is enforced **at the middleware layer** (not inside controller logic). Each
 
 | Permission                          | ADMIN | MANAGER | MEMBER |
 |-------------------------------------|:-----:|:-------:|:------:|
-| Manage users (create/update/delete) |  ✅   |   ❌    |   ❌   |
-| Create / update projects            |  ✅   |   ✅    |   ❌   |
-| Delete projects                     |  ✅   |   ❌    |   ❌   |
-| Create / update tasks               |  ✅   |   ✅    |   ❌   |
-| Delete tasks                        |  ✅   |   ❌    |   ❌   |
-| Advance task status                 |  ✅   |   ✅    |  Own only |
-| View all org tasks                  |  ✅   |   ✅    |   ❌   |
-| View own tasks only                 |  ✅   |   ✅    |   ✅   |
-| View analytics                      |  ✅   |   ✅    |   ❌   |
+| Manage users (create/update/delete) |     |       |      |
+| Create / update projects            |     |       |      |
+| Delete projects                     |     |       |      |
+| Create / update tasks               |     |       |      |
+| Delete tasks                        |     |       |      |
+| Advance task status                 |     |       |  Own only |
+| View all org tasks                  |     |       |      |
+| View own tasks only                 |     |       |      |
+| View analytics                      |     |       |      |
 
 ---
 
