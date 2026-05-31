@@ -2,7 +2,8 @@ import { useEffect, useState, useCallback } from 'react';
 import { projectsApi } from '../api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { Plus, X, FolderOpen } from 'lucide-react';
+import { Plus, X, FolderOpen, Moon, Sun } from 'lucide-react';
+import { useOutletContext } from 'react-router-dom';
 
 function ProjectModal({ project, onClose, onSave }) {
   const [form, setForm] = useState({ name: project?.name || '', description: project?.description || '' });
@@ -50,6 +51,7 @@ function ProjectModal({ project, onClose, onSave }) {
 
 export default function ProjectsPage() {
   const { canManageProjects, isAdmin } = useAuth();
+  const { theme, toggleTheme } = useOutletContext();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading]   = useState(true);
   const [modal, setModal]       = useState(false);
@@ -79,11 +81,16 @@ export default function ProjectsPage() {
     <>
       <div className="page-header">
         <div><h2>Projects</h2><p>All projects in your organization</p></div>
-        {canManageProjects && (
-          <button className="btn btn-primary" onClick={() => { setSelected(null); setModal(true); }}>
-            <Plus size={15} /> New Project
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          {canManageProjects && (
+            <button className="btn-primary btn" onClick={() => { setSelected(null); setModal(true); }}>
+              <Plus size={15} /> New Project
+            </button>
+          )}
+          <button className="btn-icon" onClick={toggleTheme} title="Toggle Theme">
+            {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
           </button>
-        )}
+        </div>
       </div>
 
       <div className="page-body">

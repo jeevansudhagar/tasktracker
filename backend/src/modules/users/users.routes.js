@@ -11,8 +11,8 @@ const router = Router();
 // All user routes require authentication
 router.use(authenticate);
 
-// GET /users — ADMIN only
-router.get('/', requireRole('ADMIN'), controller.listUsers);
+// GET /users — ADMIN or MANAGER
+router.get('/', requireRole('ADMIN', 'MANAGER'), controller.listUsers);
 
 // GET /users/:id — ADMIN or self
 router.get('/:id', validate([param('id').isUUID()]), controller.getUser);

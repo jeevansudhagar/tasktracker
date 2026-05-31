@@ -32,6 +32,7 @@ A production-ready REST API for team-based task management with JWT authenticati
 | Cache      | Redis 7                             |
 | Auth       | JWT (access + refresh token)        |
 | Validation | express-validator                   |
+| Frontend   | React 19 + Vite                     |
 | Container  | Docker + Docker Compose             |
 
 ---
@@ -75,22 +76,21 @@ curl http://localhost:5000/health
 **Prerequisites:** Node.js 20+, MySQL 8, Redis 7
 
 ```bash
-# 1. Install dependencies
+# 1. Start the Backend
 cd backend
 npm install
-
-# 2. Configure environment
 cp .env.example .env
-# Edit .env — set DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, JWT_SECRET
-
-# 3. Create the MySQL database
+# Edit .env — set DB_PASSWORD and JWT_SECRET
 mysql -u root -p -e "CREATE DATABASE task_tracker_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+npm run dev   # Starts API on port 5000 (auto-syncs models)
 
-# 4. Start the dev server (auto-syncs Sequelize models)
-npm run dev
-
-# 5. Seed demo data
+# Seed demo data (while backend is running or after)
 npm run seed
+
+# 2. Start the Frontend (in a new terminal)
+cd ../frontend
+npm install
+npm run dev   # Starts Vite React app on port 3000
 ```
 
 ---
@@ -299,4 +299,4 @@ Given more time, I would add:
 
 6. **Pagination cursor-based** — Replace offset pagination with cursor-based for consistent results on large datasets.
 
-7. **Full frontend** — React task board with Kanban drag-and-drop (columns = statuses), integrated with this API.
+7. **E2E Testing** — Add Cypress or Playwright tests to cover complete end-to-end user workflows.

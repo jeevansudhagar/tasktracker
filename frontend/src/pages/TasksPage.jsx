@@ -2,7 +2,8 @@ import { useEffect, useState, useCallback } from 'react';
 import { tasksApi, projectsApi, usersApi } from '../api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { Plus, LayoutGrid, List, X, ChevronDown } from 'lucide-react';
+import { Plus, LayoutGrid, List, X, ChevronDown, Moon, Sun } from 'lucide-react';
+import { useOutletContext } from 'react-router-dom';
 
 const STATUSES   = ['TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE', 'BLOCKED'];
 const PRIORITIES = ['LOW', 'MEDIUM', 'HIGH'];
@@ -248,6 +249,7 @@ function ListView({ tasks, onStatusClick, onEdit, onDelete, canManage }) {
 // Main Page
 export default function TasksPage() {
   const { canManageTasks, canManageUsers, isAdmin } = useAuth();
+  const { theme, toggleTheme } = useOutletContext();
   const [tasks, setTasks]           = useState([]);
   const [projects, setProjects]     = useState([]);
   const [users, setUsers]           = useState([]);
@@ -276,10 +278,10 @@ export default function TasksPage() {
 
   useEffect(() => {
     projectsApi.list({ limit: 100 }).then(r => setProjects(r.data.data.projects)).catch(() => {});
-    if (canManageUsers || isAdmin) {
+    if (canManageTasks) {
       usersApi.list({ limit: 100 }).then(r => setUsers(r.data.data.users)).catch(() => {});
     }
-  }, [canManageUsers, isAdmin]);
+  }, [canManageTasks]);
 
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this task?')) return;
@@ -309,6 +311,9 @@ export default function TasksPage() {
               <Plus size={15} /> New Task
             </button>
           )}
+          <button className="btn-icon" onClick={toggleTheme} title="Toggle Theme">
+            {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+          </button>
         </div>
       </div>
 

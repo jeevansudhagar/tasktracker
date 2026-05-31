@@ -56,11 +56,11 @@ const register = async (req, res, next) => {
 
       const slugExists = await Organization.findOne({ where: { slug } });
       if (slugExists) {
-        throw createError(409, 'ORG_EXISTS', 'Organization with this name already exists');
+        orgId = slugExists.id;
+      } else {
+        const org = await Organization.create({ name: organizationName, slug });
+        orgId = org.id;
       }
-
-      const org = await Organization.create({ name: organizationName, slug });
-      orgId = org.id;
     } else {
       // Verify org exists
       const org = await Organization.findByPk(orgId);

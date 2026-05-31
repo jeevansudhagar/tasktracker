@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { tasksApi, projectsApi, analyticsApi } from '../api';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import { tasksApi, projectsApi, analyticsApi, usersApi } from '../api';
 import { useAuth } from '../context/AuthContext';
-import { CheckSquare, FolderOpen, Clock, AlertTriangle, TrendingUp } from 'lucide-react';
+import { CheckSquare, FolderOpen, Clock, AlertTriangle, TrendingUp, Users, Moon, Sun } from 'lucide-react';
 
 const STATUS_COLORS = {
   TODO:'var(--accent)', IN_PROGRESS:'var(--warning)', IN_REVIEW:'var(--info)', DONE:'var(--success)', BLOCKED:'var(--danger)'
@@ -10,8 +10,9 @@ const STATUS_COLORS = {
 
 export default function DashboardPage() {
   const { user, isAdmin, isManager, canManageTasks } = useAuth();
+  const { theme, toggleTheme } = useOutletContext();
   const navigate = useNavigate();
-  const [stats, setStats] = useState({ tasks: 0, todo: 0, inProgress: 0, done: 0, blocked: 0, projects: 0 });
+  const [stats, setStats] = useState({ tasks: 0, todo: 0, inProgress: 0, done: 0, blocked: 0, projects: 0, users: 0 });
   const [recentTasks, setRecentTasks]       = useState([]);
   const [overdueData, setOverdueData]       = useState([]);
   const [breakdown, setBreakdown]           = useState([]);
@@ -20,9 +21,10 @@ export default function DashboardPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [tasksRes, projectsRes] = await Promise.all([
-          tasksApi.list({ limit: 5, page: 1 }),
+        const [tasksRes, projectsRes, usersRes] = await Promise.all([
+          tasksApi.list({ limit: 50, page: 1 }),
           projectsApi.list({ limit: 100 }),
+          isAdmin ? usersApi.list({ limit: 1 }) : Promise.resolve({ data: { data: { pagination: { total: 0 } } } })
         ]);
         const tasks    = tasksRes.data.data.tasks;
         const projects = projectsRes.data.data.projects;
@@ -34,6 +36,7 @@ export default function DashboardPage() {
           done:       tasks.filter(t => t.status === 'DONE').length,
           blocked:    tasks.filter(t => t.status === 'BLOCKED').length,
           projects:   projects.length,
+          users:      isAdmin ? usersRes.data.data.pagination.total : 0,
         });
 
         if (canManageTasks) {
@@ -41,7 +44,7 @@ export default function DashboardPage() {
             analyticsApi.overdueSummary(),
             analyticsApi.taskStatusBreakdown(),
           ]);
-          setOverdueData(ovRes.data.data.overdueSummary?.slice(0, 5) || []);
+          setOverdueData(ovRes.data.data.overdueSummary || []);
           setBreakdown(bkRes.data.data.breakdown || []);
         }
       } catch {}
@@ -59,6 +62,7 @@ export default function DashboardPage() {
     { label: 'Blocked',      value: stats.blocked,     icon: <AlertTriangle size={20} />,bg:'rgba(239,68,68,0.15)', color: 'var(--danger)' },
     { label: 'Projects',     value: stats.projects,    icon: <FolderOpen size={20} />,  bg: 'rgba(59,130,246,0.15)', color: 'var(--info)' },
   ];
+  if (isAdmin) statCards.push({ label: 'Users', value: stats.users, icon: <Users size={20} />, bg: 'rgba(139,92,246,0.15)', color: '#8b5cf6' });
 
   // Build unique projects from breakdown
   const projectMap = {};
@@ -75,6 +79,9 @@ export default function DashboardPage() {
           <h2>Dashboard</h2>
           <p>Welcome back, {user?.name} · {user?.role}</p>
         </div>
+        <button className="btn-icon" onClick={toggleTheme} title="Toggle Theme">
+          {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+        </button>
       </div>
       <div className="page-body">
 
@@ -100,16 +107,18 @@ export default function DashboardPage() {
             </div>
             {recentTasks.length === 0
               ? <p className="text-muted">No tasks yet.</p>
-              : recentTasks.map(t => (
-                <div key={t.id} style={{ padding: '10px 0', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: STATUS_COLORS[t.status], flexShrink: 0 }} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 13, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.title}</p>
-                    <p className="text-muted">{t.assignee?.name || 'Unassigned'}</p>
-                  </div>
-                  <span className={`badge badge-${t.priority.toLowerCase()}`}>{t.priority}</span>
+              : <div style={{ maxHeight: 280, overflowY: 'auto', paddingRight: 8 }}>
+                  {recentTasks.map(t => (
+                    <div key={t.id} style={{ padding: '10px 0', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <div style={{ width: 8, height: 8, borderRadius: '50%', background: STATUS_COLORS[t.status], flexShrink: 0 }} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ fontSize: 13, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.title}</p>
+                        <p className="text-muted">{t.assignee?.name || 'Unassigned'}</p>
+                      </div>
+                      <span className={`badge badge-${t.priority.toLowerCase()}`}>{t.priority}</span>
+                    </div>
+                  ))}
                 </div>
-              ))
             }
           </div>
 
@@ -119,20 +128,22 @@ export default function DashboardPage() {
               <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 16 }}>Overdue by User</h3>
               {overdueData.length === 0
                 ? <p className="text-muted">No overdue tasks </p>
-                : overdueData.map(u => (
-                  <div key={u.userId} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 0', borderBottom: '1px solid var(--border)' }}>
-                    <div className="avatar" style={{ width: 28, height: 28, fontSize: 11 }}>
-                      {u.userName?.charAt(0)?.toUpperCase()}
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <p style={{ fontSize: 13, fontWeight: 500 }}>{u.userName}</p>
-                      <p className="text-muted">{u.userEmail}</p>
-                    </div>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: u.overdueCount > 0 ? 'var(--danger)' : 'var(--success)' }}>
-                      {u.overdueCount} overdue
-                    </span>
+                : <div style={{ maxHeight: 280, overflowY: 'auto', paddingRight: 8 }}>
+                    {overdueData.map(u => (
+                      <div key={u.userId} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 0', borderBottom: '1px solid var(--border)' }}>
+                        <div className="avatar" style={{ width: 28, height: 28, fontSize: 11 }}>
+                          {u.userName?.charAt(0)?.toUpperCase()}
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <p style={{ fontSize: 13, fontWeight: 500 }}>{u.userName}</p>
+                          <p className="text-muted">{u.userEmail}</p>
+                        </div>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: u.overdueCount > 0 ? 'var(--danger)' : 'var(--success)' }}>
+                          {u.overdueCount} overdue
+                        </span>
+                      </div>
+                    ))}
                   </div>
-                ))
               }
             </div>
           )}

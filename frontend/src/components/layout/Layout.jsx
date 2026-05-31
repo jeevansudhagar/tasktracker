@@ -1,5 +1,6 @@
+import { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, CheckSquare, FolderOpen, Users, LogOut, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, CheckSquare, FolderOpen, Users, LogOut, Moon, Sun } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 
@@ -12,6 +13,19 @@ export default function Layout() {
     toast.success('Logged out');
     navigate('/login');
   };
+
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark-theme');
+    } else {
+      document.documentElement.classList.remove('dark-theme');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
 
   const initials = user?.name?.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || 'U';
 
@@ -55,7 +69,7 @@ export default function Layout() {
       </aside>
 
       <main className="main-content">
-        <Outlet />
+        <Outlet context={{ theme, toggleTheme }} />
       </main>
     </div>
   );

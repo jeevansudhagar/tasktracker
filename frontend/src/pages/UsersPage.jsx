@@ -2,7 +2,8 @@ import { useEffect, useState, useCallback } from 'react';
 import { usersApi } from '../api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { X, Users } from 'lucide-react';
+import { X, Users, Moon, Sun } from 'lucide-react';
+import { useOutletContext } from 'react-router-dom';
 
 function UserModal({ user, onClose, onSave }) {
   const [form, setForm] = useState({ name: user?.name || '', role: user?.role || 'MEMBER', isActive: user?.isActive ?? true });
@@ -58,6 +59,7 @@ function UserModal({ user, onClose, onSave }) {
 
 export default function UsersPage() {
   const { canManageUsers, user: me } = useAuth();
+  const { theme, toggleTheme } = useOutletContext();
   const [users, setUsers]     = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
@@ -86,6 +88,9 @@ export default function UsersPage() {
     <>
       <div className="page-header">
         <div><h2>Users</h2><p>Manage organization members</p></div>
+        <button className="btn-icon" onClick={toggleTheme} title="Toggle Theme">
+          {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+        </button>
       </div>
 
       <div className="page-body">
